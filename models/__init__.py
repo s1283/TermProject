@@ -1,1 +1,2 @@
-__all__ = []
+__all__ = ["Task"]
+from .task import Task

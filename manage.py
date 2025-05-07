@@ -11,6 +11,7 @@ def create_tables():
     db.create_all()
     print("Successfully created tables")
 
-def main():
+if __name__ == "__main__":
     with app.app_context():
-        pass
+        drop_tables()
+        create_tables()
