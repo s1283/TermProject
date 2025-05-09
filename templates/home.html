@@ -3,8 +3,38 @@
 {% block title %}Home{% endblock %}
 
 {% block main %}
-  <div>
-    <h1>Welcome to your Task tracker</h1>
-    <p>Create, Update, or Delete a task</p>
+<h1>Welcome to your Task Tracker</h1>
+<table>
+  <thead>
+    <tr>
+      <th>Title</th>
+      <th>Type</th>
+      <th>Due Date</th>
+      <th>Status</th>
+    </tr>
+  </thead>
+  <tbody>
+    {% for task in tasks %}
+    <tr>
+      <td>{{ task.title }}</td>
+      <td>{{ task.type }}</td>
+      <td>{{ task.due_date.strftime('%b %d, %Y') }}</td>
+      <td>{{ task.status }}</td>
+    </tr>
+    {% endfor %}
+  </tbody>
+</table>
+
+<div class="completed-section">
+  <h2>Recently Completed Tasks</h2>
+  <div class="card-grid">
+    {% for task in completed_tasks %}
+    <div class="task-card">
+      <h3>{{ task.title }}</h3>
+      <p>{{ task.type }}</p>
+      <p class="date-finished">{{ task.due_date.strftime('%b %d, %Y') }}</p>
+    </div>
+    {% endfor %}
   </div>
+</div>
 {% endblock %}
