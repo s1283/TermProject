@@ -78,5 +78,13 @@ def complete_task(id):
         db.session.commit()
     return redirect(url_for("view_tasks"))
 
+@app.route("/tasks/edit/<int:id>", methods=["GET"])
+def edit_task_form(id):
+    statement = db.select(Task).where(Task.id == id)
+    task = db.session.execute(statement).scalars().first()
+    if task:
+        return render_template("edit_task.html", task=task)
+    return redirect(url_for("view_tasks"))
+
 if __name__ == "__main__":
     app.run(debug=True, port=8888)
