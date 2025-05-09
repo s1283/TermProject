@@ -38,7 +38,17 @@ def generate_random_tasks():
     print("Generated 10 random tasks")
 
 if __name__ == "__main__":
+    if len(sys.argv) < 2:
+        print("Please provide a command: create_tables, drop_tables, generate_tasks")
+        sys.exit(1)
+    action = sys.argv[1]
     with app.app_context():
-        drop_tables()
-        create_tables()
-        generate_random_tasks()
+        if action == "create_tables":
+            create_tables()
+        elif action == "drop_tables":
+            drop_tables()
+        elif action == "generate_tasks":
+            generate_random_tasks()
+        else:
+            print("Please provide a command: create_tables, drop_tables, generate_tasks")
+            sys.exit(1)
