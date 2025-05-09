@@ -1,7 +1,124 @@
+body {
+    font-family: Arial, sans-serif;
+    margin: 2rem;
+    background-color: #f9f9f9;
+    color: #333;
+}
+
+header {
+    margin-bottom: 2rem;
+}
+
+nav a {
+    margin-right: 1rem;
+    text-decoration: none;
+    color: #007BFF;
+    font-weight: bold;
+}
+
+nav a:hover {
+    text-decoration: underline;
+}
+
 h1 {
-    font-size: 40px;
-    font-family: 'Franklin Gothic Medium', 'Arial Narrow', Arial, sans-serif;
-    font-weight: 600;
+    color: #ffcc00;
+    font-size: 2.5rem;
     font-style: italic;
-    color: gold;
+}
+
+form {
+    margin-top: 1rem;
+    margin-bottom: 1rem;
+}
+
+form input,
+form select,
+form button {
+    padding: 0.5rem;
+    margin-top: 0.5rem;
+    margin-bottom: 0.5rem;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    display: block;
+    width: 100%;
+    max-width: 400px;
+}
+
+button {
+    background-color: #007BFF;
+    color: white;
+    border: none;
+    cursor: pointer;
+    font-weight: bold;
+    width: auto;
+}
+
+button:hover {
+    background-color: #0056b3;
+}
+
+ul {
+    padding-left: 1rem;
+}
+
+li {
+    background-color: #fff;
+    padding: 1rem;
+    margin-bottom: 1rem;
+    border: 1px solid #ddd;
+    border-radius: 5px;
+}
+
+table {
+    width: 100%;
+    border-collapse: collapse;
+    background-color: #f1eef2;
+}
+
+th, td {
+    padding: 12px;
+    text-align: left;
+    border-bottom: 2px solid #333;
+}
+
+th {
+    font-weight: bold;
+    font-size: 1.1rem;
+    background-color: #e0dce2;
+}
+
+.completed-section {
+    background-color: #e3e3e3;
+    padding: 2rem;
+    margin-top: 2rem;
+    border-radius: 8px;
+}
+
+.card-grid {
+    display: flex;
+    justify-content: space-between;
+    gap: 1rem;
+    margin-top: 1rem;
+}
+
+.task-card {
+    background-color: white;
+    padding: 1.5rem;
+    border-radius: 12px;
+    width: 30%;
+    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.1);
+}
+
+.task-card h3 {
+    margin: 0;
+    font-size: 1.3rem;
+}
+
+.task-card p {
+    margin: 0.5rem 0;
+}
+
+.date-finished {
+    color: gray;
+    font-style: italic;
 }
