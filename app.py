@@ -55,6 +55,22 @@ def add_task():
     db.session.commit()
     return redirect(url_for("view_tasks"))
 
+@app.route("/tasks/edit/<int:id>", methods=["GET", "POST"])
+def edit_task(id):
+    statement = db.select(Task).where(Task.id == id)
+    task = db.session.execute(statement).scalars().first()
+
+    if request.method == "POST":
+        task.title = request.form["title"]
+        task.type = request.form["type"]
+        task.due_date = datetime.strptime(request.form["due_date"], "%Y-%m-%d")
+        task.description = request.form["description"] if "description" in request.form else None
+        task.status = request.form["status"]
+        db.session.commit()
+        return redirect(url_for("view_tasks"))
+
+    return render_template("edit_task.html", task=task)
+
 @app.route("/tasks/delete/<int:id>", methods=["POST"])
 def delete_task(id):
     statement = db.select(Task).where(Task.id == id)
