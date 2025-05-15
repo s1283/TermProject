@@ -35,8 +35,8 @@ def test_create_task(client, app):
         "title": "Test Task",
         "type": "Work",
         "due_date": future_date,
-        "description": "Automated test task",
-        "status": "Pending"
+        "description": "test task",
+        "status": "Incomplete"
     }, follow_redirects=True)
 
     assert response.status_code == 200
@@ -44,9 +44,20 @@ def test_create_task(client, app):
 
     with app.app_context():
         task = db.session.execute(
-            db.select(Task).where(Task.title == "Test Task")
-        ).scalar_one_or_none()
+            db.select(Task).where(Task.title == "Test Task")).scalar_one_or_none()
         assert task is not None
+
+def test_empty_description(client):
+    future_date = (datetime.now() + timedelta(days=3)).strftime("%Y-%m-%d")
+    response = client.post("/tasks/add", data={
+        "title": "test task",
+        "type": "Work",
+        "due_date": future_date,
+        "description": "",
+        "status": "Incomplete"
+    }, follow_redirects=True)
+
+    assert response.status_code == 200
 
 def test_delete_task(client, app):
     with app.app_context():
@@ -55,7 +66,7 @@ def test_delete_task(client, app):
             type="School",
             due_date=datetime.now() + timedelta(days=1),
             description="To be deleted",
-            status="Pending"
+            status="Incomplete"
         )
         db.session.add(task)
         db.session.commit()
