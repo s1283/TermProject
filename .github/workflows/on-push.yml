@@ -49,9 +49,9 @@ jobs:
     - name: Create pull request
       run: |
         gh pr create \
-          --base Development \
+          --base main \
           --head ${{ github.ref_name }} \
-          --title "Merge ${{ github.ref_name }} into Development" \
+          --title "Merge ${{ github.ref_name }}" \
           --body "Automatic PR from GitHub Actions"
       env:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
