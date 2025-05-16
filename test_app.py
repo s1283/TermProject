@@ -78,3 +78,87 @@ def test_delete_task(client, app):
     with app.app_context():
         deleted = db.session.get(Task, task_id)
         assert deleted is None
+
+def test_edit_task(client, app):
+    with app.app_context():
+        task = Task(
+            title="Test Task",
+            type="School",
+            due_date=datetime.now() + timedelta(days=1),
+            description="edit test",
+            status="Incomplete"
+        )
+        db.session.add(task)
+        db.session.commit()
+        task_id = task.id
+
+    update_data = {
+        "title": "Edited Test Task",
+        "type": "School",
+        "due_date": (datetime.now() + timedelta(days=2)).strftime("%Y-%m-%d"),
+        "description": "edit test updated",
+        "status": "Incomplete"
+    }
+
+    response = client.post(f"/tasks/edit/{task_id}", data=update_data, follow_redirects=True)
+    assert response.status_code == 200
+
+    with app.app_context():
+        edited = db.session.get(Task, task_id)
+        assert edited is not None
+        assert edited.title == "Edited Test Task"
+
+def test_edit_completed_task(client, app):
+    with app.app_context():
+        task = Task(
+            title="Test Completed Task",
+            type="School",
+            due_date=datetime.now() + timedelta(days=1),
+            description="edit test",
+            status="Incomplete"
+        )
+        db.session.add(task)
+        db.session.commit()
+        task_id = task.id
+
+    update_data = {
+        "title": "Edited Test Task",
+        "type": "School",
+        "due_date": (datetime.now() + timedelta(days=2)).strftime("%Y-%m-%d"),
+        "description": "edit test updated",
+        "status": "Complete"
+    }
+
+    response = client.post(f"/tasks/edit/{task_id}", data=update_data, follow_redirects=True)
+    assert response.status_code == 200
+
+    with app.app_context():
+        edited = db.session.get(Task, task_id)
+        assert edited is not None
+
+
+def test_edit_task_fail_deletion(client, app):
+    with app.app_context():
+        task = Task(
+            title="Test Task",
+            type="School",
+            due_date=datetime.now() + timedelta(days=1),
+            description="edit test",
+            status="Incomplete"
+        )
+        db.session.add(task)
+        db.session.commit()
+        task_id = task.id
+
+    response = client.post(f"/tasks/edit/{task_id}", follow_redirects=True)
+    assert response.status_code == 400 # DOUBLE CHECK
+
+    with app.app_context():
+        edited = db.session.get(Task, task_id)
+        assert edited is not None # DOUBLE CHECK
+
+
+def test_task_does_not_exist(client, app):
+    dne_id = -1
+    response = client.post(f"/tasks/delete/{dne_id}", follow_redirects=True)
+    assert response.status_code == 404 #DOUBLE CHECK
