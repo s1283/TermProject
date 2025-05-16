@@ -122,3 +122,45 @@ th {
     color: gray;
     font-style: italic;
 }
+
+.overdue {
+  background-color: #ffe6e6;
+  color: #b30000;
+  font-weight: bold;
+}
+
+.onhold {
+  background-color: #fff7cc;
+  color: #665c00;
+}
+
+.inprogress {
+  background-color: #e6ffec;
+  color: #006622;
+}
+
+.notstarted {
+  background-color: #f2f2f2;
+  color: #4d4d4d;
+}
+
+.nav-links {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  font-weight: bold;
+}
+
+.nav-links a {
+  color: #3366ff;
+  text-decoration: none;
+}
+
+.nav-links a:hover {
+  text-decoration: underline;
+}
+
+.nav-links span {
+  color: #333;
+  font-weight: normal;
+}

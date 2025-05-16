@@ -24,7 +24,7 @@
 
     <label>Status:</label><br>
     <select name="status">
-        {% for option in ['Pending', 'Completed', 'In progress', 'Not Started'] %}
+        {% for option in ['Not Started', 'In-Progress', 'Overdue', 'On-Hold', 'Completed'] %}
         <option value="{{ option }}" {% if task.status == option %}selected{% endif %}>{{ option }}</option>
         {% endfor %}
     </select><br><br>
