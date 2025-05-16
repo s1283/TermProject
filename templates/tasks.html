@@ -12,32 +12,52 @@
 <table>
     <thead>
         <tr>
-            <th>Title</th>
-            <th>Type</th>
-            <th>Due Date</th>
-            <th>Description</th>
-            <th>Status</th>
+            {% for field in ["title", "type", "due_date", "description", "status"] %}
+            <th>
+            {{ field.replace('_', ' ').title() }}
+            {% set current_sort = request.args.get('sort_by') %}
+            {% set current_order = request.args.get('order') %}
+            {% if current_sort == field and current_order == 'asc' %}
+                <a href="{{ url_for('view_tasks', sort_by=field, order='desc') }}">
+                <img src="{{ url_for('static', filename='up-arrow.png') }}" alt="↑" width="12">
+                </a>
+            {% elif current_sort == field and current_order == 'desc' %}
+                <a href="{{ url_for('view_tasks') }}">
+                <img src="{{ url_for('static', filename='down-arrow.png') }}" alt="↓" width="12">
+                </a>
+            {% else %}
+                <a href="{{ url_for('view_tasks', sort_by=field, order='asc') }}">
+                <img src="{{ url_for('static', filename='sort-icon.png') }}" alt="⇅" width="12">
+                </a>
+            {% endif %}
+            </th>
+            {% endfor %}
             <th>Actions</th>
         </tr>
     </thead>
     <tbody>
         {% for task in tasks %}
-        <tr>
+        <tr class="
+            {% if task.status == 'Overdue' %}overdue
+            {% elif task.status == 'On-Hold' %}onhold
+            {% elif task.status == 'In-Progress' %}inprogress
+            {% elif task.status == 'Not Started' %}notstarted{% endif %}
+        ">
             <td>{{ task.title }}</td>
             <td>{{ task.type }}</td>
             <td>{{ task.due_date.strftime('%b %d, %Y') }}</td>
             <td>{{ task.description or 'No description' }}</td>
             <td>{{ task.status }}</td>
             <td>
-                <form method="POST" action="{{ url_for('complete_task', id=task.id) }}" style="display:inline;">
-                    <button type="submit">Complete</button>
-                </form>
-                <form method="POST" action="{{ url_for('delete_task', id=task.id) }}" style="display:inline;">
-                    <button type="submit">Delete</button>
-                </form>
-                <form method="GET" action="{{ url_for('edit_task', id=task.id) }}" style="display:inline;">
-                    <button type="submit">Edit</button>
-                </form>
+            <form method="POST" action="{{ url_for('complete_task', id=task.id) }}" style="display:inline;">
+                <button type="submit">Complete</button>
+            </form>
+            <form method="POST" action="{{ url_for('delete_task', id=task.id) }}" style="display:inline;">
+                <button type="submit">Delete</button>
+            </form>
+            <form method="GET" action="{{ url_for('edit_task', id=task.id) }}" style="display:inline;">
+                <button type="submit">Edit</button>
+            </form>
             </td>
         </tr>
         {% endfor %}
