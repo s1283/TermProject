@@ -16,7 +16,7 @@ def create_tables():
 def generate_random_tasks():
     titles = ["Buy groceries", "Study Python", "Workout", "Meeting", "Read book", "Write report"]
     types = ["School", "Work", "Personal", "Other"] 
-    statuses = ["Incomplete", "On-Hold", "Completed"]   
+    statuses = ["Not Started", "On-Hold", "Completed", "In-Progress"]   
 
     for _ in range(20):
         title = random.choice(titles)
@@ -48,6 +48,10 @@ if __name__ == "__main__":
         elif action == "drop_table":
             drop_tables()
         elif action == "generate_tasks":
+            generate_random_tasks()
+        elif action == "create":
+            drop_tables()
+            create_tables()
             generate_random_tasks()
         else:
             print("Please provide a command: create_table, drop_tables, generate_tasks")
