@@ -31,7 +31,26 @@ def home():
 
 @app.route("/tasks", methods=["GET"])
 def view_tasks():
+    sort_by = request.args.get("sort_by")
+    order = request.args.get("order")
     statement = db.select(Task)
+
+    if sort_by and order:
+        valid_fields = {
+            "title": Task.title,
+            "type": Task.type,
+            "due_date": Task.due_date,
+            "description": Task.description,
+            "status": Task.status
+        }
+
+        if sort_by in valid_fields:
+            column = valid_fields[sort_by]
+            if order == "desc":
+                statement = statement.order_by(column.desc())
+            else:
+                statement = statement.order_by(column)
+
     tasks = db.session.execute(statement).scalars().all()
     return render_template("tasks.html", tasks=tasks)
 

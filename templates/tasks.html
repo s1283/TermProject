@@ -11,11 +11,26 @@
 <table>
     <thead>
         <tr>
-            <th>Title</th>
-            <th>Type</th>
-            <th>Due Date</th>
-            <th>Description</th>
-            <th>Status</th>
+            {% for field in ["title", "type", "due_date", "description", "status"] %}
+            <th>
+            {{ field.replace('_', ' ').title() }}
+            {% set current_sort = request.args.get('sort_by') %}
+            {% set current_order = request.args.get('order') %}
+            {% if current_sort == field and current_order == 'asc' %}
+                <a href="{{ url_for('view_tasks', sort_by=field, order='desc') }}">
+                <img src="{{ url_for('static', filename='up-arrow.png') }}" alt="↑" width="12">
+                </a>
+            {% elif current_sort == field and current_order == 'desc' %}
+                <a href="{{ url_for('view_tasks') }}">
+                <img src="{{ url_for('static', filename='down-arrow.png') }}" alt="↓" width="12">
+                </a>
+            {% else %}
+                <a href="{{ url_for('view_tasks', sort_by=field, order='asc') }}">
+                <img src="{{ url_for('static', filename='sort-icon.png') }}" alt="⇅" width="12">
+                </a>
+            {% endif %}
+            </th>
+            {% endfor %}
             <th>Actions</th>
         </tr>
     </thead>
