@@ -151,11 +151,11 @@ def test_edit_task_fail_deletion(client, app):
         task_id = task.id
 
     response = client.post(f"/tasks/edit/{task_id}", follow_redirects=True)
-    assert response.status_code == 400 # DOUBLE CHECK
+    assert response.status_code == 400 
 
     with app.app_context():
         edited = db.session.get(Task, task_id)
-        assert edited is not None # DOUBLE CHECK
+        assert edited is not None 
 
 
 def test_task_does_not_exist(client, app):
