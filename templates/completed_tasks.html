@@ -1,0 +1,30 @@
+{% extends "base.html" %}
+
+{% block title %}Completed Tasks{% endblock %}
+
+{% block main %}
+<h1>Completed Tasks</h1>
+
+<table>
+  <thead>
+    <tr>
+      <th>Title</th>
+      <th>Type</th>
+      <th>Due Date</th>
+      <th>Description</th>
+      <th>Status</th>
+    </tr>
+  </thead>
+  <tbody>
+    {% for task in tasks %}
+    <tr>
+      <td>{{ task.title }}</td>
+      <td>{{ task.type }}</td>
+      <td>{{ task.due_date.strftime('%b %d, %Y') }}</td>
+      <td>{{ task.description or 'No description' }}</td>
+      <td>{{ task.status }}</td>
+    </tr>
+    {% endfor %}
+  </tbody>
+</table>
+{% endblock %}

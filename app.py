@@ -18,22 +18,63 @@ app.register_blueprint(api_bp, url_prefix="/api")
 @app.route("/", methods=["GET"])
 def home():
     now = datetime.now()
-    statement = db.select(Task).order_by(Task.due_date).limit(5)
-    completed_statement = db.select(Task).where(
+    top_tasks_stmt = db.select(Task).where(Task.status != "Completed").order_by(Task.due_date).limit(5)
+
+    recent_completed_stmt = db.select(Task).where(
         Task.status == "Completed",
         Task.due_date >= now - timedelta(days=7)
     ).order_by(Task.due_date.desc()).limit(3)
 
-    top_tasks = db.session.execute(statement).scalars().all()
-    recent_completed = db.session.execute(completed_statement).scalars().all()
+    top_tasks = db.session.execute(top_tasks_stmt).scalars().all()
+    recent_completed = db.session.execute(recent_completed_stmt).scalars().all()
+
+    # Update overdue statuses
+    for task in top_tasks:
+        if task.due_date.date() < now.date() and task.status not in ["Completed", "Overdue", "On-Hold"]:
+            task.status = "Overdue"
+    db.session.commit()
 
     return render_template("home.html", tasks=top_tasks, completed_tasks=recent_completed)
 
 @app.route("/tasks", methods=["GET"])
 def view_tasks():
+    now = datetime.now()
+    sort_by = request.args.get("sort_by")
+    order = request.args.get("order")
     statement = db.select(Task)
+
+    valid_fields = {
+        "title": Task.title,
+        "type": Task.type,
+        "due_date": Task.due_date,
+        "description": Task.description,
+        "status": Task.status
+    }
+
+    if sort_by in valid_fields:
+        column = valid_fields[sort_by]
+        if order == "desc":
+            statement = statement.order_by(column.desc())
+        else:
+            statement = statement.order_by(column)
+    else:
+        statement = statement.order_by(Task.due_date)
+
     tasks = db.session.execute(statement).scalars().all()
-    return render_template("tasks.html", tasks=tasks)
+
+    for task in tasks:
+        if task.due_date.date() < now.date() and task.status not in ["Completed", "Overdue", "On-Hold"]:
+            task.status = "Overdue"
+    db.session.commit()
+
+    active_tasks = [task for task in tasks if task.status != "Completed"]
+    return render_template("tasks.html", tasks=active_tasks)
+
+@app.route("/completed", methods=["GET"])
+def completed_tasks():
+    statement = db.select(Task).where(Task.status == "Completed").order_by(Task.due_date.desc())
+    completed = db.session.execute(statement).scalars().all()
+    return render_template("completed_tasks.html", tasks=completed)
 
 @app.route("/tasks/add", methods=["POST"])
 def add_task():
@@ -54,6 +95,22 @@ def add_task():
     db.session.add(new_task)
     db.session.commit()
     return redirect(url_for("view_tasks"))
+
+@app.route("/tasks/edit/<int:id>", methods=["GET", "POST"])
+def edit_task(id):
+    statement = db.select(Task).where(Task.id == id)
+    task = db.session.execute(statement).scalars().first()
+
+    if request.method == "POST":
+        task.title = request.form["title"]
+        task.type = request.form["type"]
+        task.due_date = datetime.strptime(request.form["due_date"], "%Y-%m-%d")
+        task.description = request.form["description"] if "description" in request.form else None
+        task.status = request.form["status"]
+        db.session.commit()
+        return redirect(url_for("view_tasks"))
+
+    return render_template("edit_task.html", task=task)
 
 @app.route("/tasks/delete/<int:id>", methods=["POST"])
 def delete_task(id):

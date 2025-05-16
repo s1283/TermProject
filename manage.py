@@ -16,9 +16,9 @@ def create_tables():
 def generate_random_tasks():
     titles = ["Buy groceries", "Study Python", "Workout", "Meeting", "Read book", "Write report"]
     types = ["School", "Work", "Personal", "Other"] 
-    statuses = ["Incomplete", "On-Hold"]
+    statuses = ["Not Started", "On-Hold", "Completed", "In-Progress"]   
 
-    for _ in range(10):
+    for _ in range(20):
         title = random.choice(titles)
         task_type = random.choice(types)
         due_date = datetime.now() + timedelta(days=random.randint(0, 30))
@@ -35,10 +35,24 @@ def generate_random_tasks():
         db.session.add(task)
 
     db.session.commit()
-    print("Generated 10 random tasks")
+    print("Generated 20 random tasks")
 
 if __name__ == "__main__":
+    if len(sys.argv) < 2:
+        print("Please provide a command: create_table, drop_tables, generate_tasks")
+        sys.exit(1)
+    action = sys.argv[1]
     with app.app_context():
-        drop_tables()
-        create_tables()
-        generate_random_tasks()
+        if action == "create_table":
+            create_tables()
+        elif action == "drop_table":
+            drop_tables()
+        elif action == "generate_tasks":
+            generate_random_tasks()
+        elif action == "create":
+            drop_tables()
+            create_tables()
+            generate_random_tasks()
+        else:
+            print("Please provide a command: create_table, drop_tables, generate_tasks")
+            sys.exit(1)
