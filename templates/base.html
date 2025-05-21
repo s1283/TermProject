@@ -11,7 +11,10 @@
             <a href="{{ url_for('view_tasks') }}">Tasks</a>
             <a href="{{ url_for('completed_tasks') }}">Completed</a>
             <form method="POST" action="{{ url_for('generate_random_tasks') }}" style="display:inline">
-                <button type="submit">Generate Random Tasks</button>
+                <button type="submit">Generate Tasks</button>
+            </form>
+            <form method="POST" action="{{ url_for('clear_all_tasks') }}" style="display:inline; margin-left: 1rem;">
+                <button type="submit">Clear Tasks</button>
             </form>
         </nav>
     </header>

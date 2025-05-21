@@ -150,7 +150,13 @@ def generate_random_tasks():
         db.session.add(task)
 
     db.session.commit()
-    return redirect(url_for("view_tasks"))
+    return redirect(url_for("home"))
+
+@app.route("/tasks/clear", methods=["POST"])
+def clear_all_tasks():
+    db.session.query(Task).delete()
+    db.session.commit()
+    return redirect(url_for("home"))
 
 if __name__ == "__main__":
     app.run(host='0.0.0.0', debug=True, port=8888)
