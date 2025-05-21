@@ -133,6 +133,16 @@ def complete_task(id):
         db.session.commit()
     return redirect(url_for("view_tasks"))
 
+@app.route("/tasks/undo/<int:id>", methods=["POST"])
+def undo_task(id):
+    statement = db.select(Task).where(Task.id == id)
+    task = db.session.execute(statement).scalars().first()
+    if task and task.status == "Completed":
+        task.status = "In-Progress"
+        db.session.commit()
+    return redirect(url_for("completed_tasks"))
+
+# only for expo
 @app.route("/tasks/generate", methods=["POST"])
 def generate_random_tasks():
     titles = ["Math Quiz", "Read Book", "Clean Room", "Submit Report"]

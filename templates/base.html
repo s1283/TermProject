@@ -13,7 +13,7 @@
             <form method="POST" action="{{ url_for('generate_random_tasks') }}" style="display:inline">
                 <button type="submit">Generate Tasks</button>
             </form>
-            <form method="POST" action="{{ url_for('clear_all_tasks') }}" style="display:inline; margin-left: 1rem;">
+            <form method="POST" action="{{ url_for('clear_all_tasks') }}" style="display:inline; margin-left: 1rem;" onsubmit="return confirm('Are you sure you want to clear all tasks?')">
                 <button type="submit">Clear Tasks</button>
             </form>
         </nav>
