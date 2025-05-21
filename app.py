@@ -4,6 +4,7 @@ from db import db
 from routes import api_bp
 from models import *
 from datetime import datetime, timedelta
+from random import choice, randint
 
 app = Flask(__name__)
 # This will make Flask use a 'sqlite' database with the filename provided
@@ -28,7 +29,6 @@ def home():
     top_tasks = db.session.execute(top_tasks_stmt).scalars().all()
     recent_completed = db.session.execute(recent_completed_stmt).scalars().all()
 
-    # Update overdue statuses
     for task in top_tasks:
         if task.due_date.date() < now.date() and task.status not in ["Completed", "Overdue", "On-Hold"]:
             task.status = "Overdue"
@@ -50,7 +50,6 @@ def view_tasks():
         "description": Task.description,
         "status": Task.status
     }
-
     if sort_by in valid_fields:
         column = valid_fields[sort_by]
         if order == "desc":
@@ -59,14 +58,11 @@ def view_tasks():
             statement = statement.order_by(column)
     else:
         statement = statement.order_by(Task.due_date)
-
     tasks = db.session.execute(statement).scalars().all()
-
     for task in tasks:
         if task.due_date.date() < now.date() and task.status not in ["Completed", "Overdue", "On-Hold"]:
             task.status = "Overdue"
     db.session.commit()
-
     active_tasks = [task for task in tasks if task.status != "Completed"]
     return render_template("tasks.html", tasks=active_tasks)
 
@@ -119,6 +115,8 @@ def delete_task(id):
     if task:
         db.session.delete(task)
         db.session.commit()
+    if task and task.status == "Completed":
+        return redirect(url_for("completed_tasks"))
     return redirect(url_for("view_tasks"))
 
 @app.route("/tasks/add", methods=["GET"])
@@ -133,6 +131,25 @@ def complete_task(id):
     if task:
         task.status = "Completed"
         db.session.commit()
+    return redirect(url_for("view_tasks"))
+
+@app.route("/tasks/generate", methods=["POST"])
+def generate_random_tasks():
+    titles = ["Math Quiz", "Read Book", "Clean Room", "Submit Report"]
+    types = ["School", "Work", "Personal", "Other"]
+    statuses = ["Not Started", "On-Hold", "Completed", "In-Progress"]  
+
+    for _ in range(20):
+        task = Task(
+            title=choice(titles),
+            type=choice(types),
+            due_date=datetime.now() + timedelta(days=randint(1, 10)),
+            description="Auto-generated",
+            status=choice(statuses)
+        )
+        db.session.add(task)
+
+    db.session.commit()
     return redirect(url_for("view_tasks"))
 
 if __name__ == "__main__":
