@@ -10,6 +10,9 @@
             <a href="{{ url_for('home') }}">Home</a>
             <a href="{{ url_for('view_tasks') }}">Tasks</a>
             <a href="{{ url_for('completed_tasks') }}">Completed</a>
+            <form method="POST" action="{{ url_for('generate_random_tasks') }}" style="display:inline">
+                <button type="submit">Generate Random Tasks</button>
+            </form>
         </nav>
     </header>
     <main>

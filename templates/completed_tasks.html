@@ -13,6 +13,7 @@
       <th>Due Date</th>
       <th>Description</th>
       <th>Status</th>
+      <th>Actions</th>
     </tr>
   </thead>
   <tbody>
@@ -23,6 +24,11 @@
       <td>{{ task.due_date.strftime('%b %d, %Y') }}</td>
       <td>{{ task.description or 'No description' }}</td>
       <td>{{ task.status }}</td>
+      <td>
+        <form method="POST" action="{{ url_for('delete_task', id=task.id) }}" style="display:inline">
+          <button type="submit">Delete</button>
+        </form>
+      </td>
     </tr>
     {% endfor %}
   </tbody>

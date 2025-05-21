@@ -164,3 +164,7 @@ th {
   color: #333;
   font-weight: normal;
 }
+
+.nav-right form {
+  margin: 0;
+}
