@@ -22,7 +22,7 @@ def generate_random_tasks():
         title = random.choice(titles)
         task_type = random.choice(types)
         due_date = datetime.now() + timedelta(days=random.randint(0, 30))
-        description = f"{title}"
+        description = "Auto-generated"
         status = random.choice(statuses)
 
         task = Task(
