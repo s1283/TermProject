@@ -58,6 +58,15 @@ def view_tasks():
             statement = statement.order_by(column)
     else:
         statement = statement.order_by(Task.due_date)
+
+    search_query = request.args.get("search", "").strip().lower()
+
+    if search_query:
+        statement = statement.where(
+            Task.title.ilike(f"%{search_query}%") |
+            Task.description.ilike(f"%{search_query}%") |
+            Task.type.ilike(f"%{search_query}%")
+        )
     tasks = db.session.execute(statement).scalars().all()
     for task in tasks:
         if task.due_date.date() < now.date() and task.status not in ["Completed", "Overdue", "On-Hold"]:

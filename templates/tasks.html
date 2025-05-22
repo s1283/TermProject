@@ -4,7 +4,10 @@
 
 {% block main %}
 <h1>All Tasks</h1>
-
+<form method="GET" action="{{ url_for('view_tasks') }}" class="task-search-form">
+  <input type="text" name="search" placeholder="Search tasks..." value="{{ request.args.get('search', '') }}">
+  <button type="submit">Search</button>
+</form>
 <form action="{{ url_for('add_task_form') }}" method="get" style="margin-bottom: 1rem;">
     <button type="submit">Create Task</button>
 </form>
